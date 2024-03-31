@@ -1,6 +1,6 @@
 package com.nikguscode.calculator.calculator.model;
 
-import static com.nikguscode.calculator.calculator.model.RequestStatus.*;
+import static com.nikguscode.calculator.calculator.model.DateType.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -29,7 +29,7 @@ public class DateStorage {
         holidaysMap.put("8/3", "holiday");
     }
 
-    public static RequestStatus isWorkingDay(LocalDate date) {
+    public static DateType isWorkingDay(LocalDate date) {
         String query = date.getDayOfMonth() + "/" + date.getMonthValue();
 
         return holidaysMap.get(query) == null ? PAYOUT_DAY : NOT_PAYOUT_DAY;

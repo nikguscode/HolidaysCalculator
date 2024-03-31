@@ -1,6 +1,6 @@
 package com.nikguscode.calculator.calculator;
 
-import static com.nikguscode.calculator.calculator.model.RequestStatus.*;
+import static com.nikguscode.calculator.calculator.model.DateType.*;
 
 import com.nikguscode.calculator.calculator.model.DateTypeChecker;
 import com.nikguscode.calculator.calculator.model.PayoutCalculator;

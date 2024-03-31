@@ -1,6 +1,6 @@
 package com.nikguscode.calculator.calculator.model;
 
-import static com.nikguscode.calculator.calculator.model.RequestStatus.*;
+import static com.nikguscode.calculator.calculator.model.DateType.*;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;

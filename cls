@@ -27,7 +27,7 @@
 [36m@@ -1,5 +1,7 @@[m
  package com.nikguscode.calculator.calculator.model;[m
  [m
-[32m+[m[32mimport static com.nikguscode.calculator.calculator.model.RequestStatus.*;[m
+[32m+[m[32mimport static com.nikguscode.calculator.calculator.model.DateType.*;[m
 [32m+[m
  import java.time.LocalDate;[m
  import java.util.HashMap;[m
@@ -76,7 +76,7 @@
 [1mindex 343c729..9b9ae7e 100644[m
 [1m--- a/src/main/java/com/nikguscode/calculator/calculator/model/DateTypeChecker.java[m
 [1m+++ b/src/main/java/com/nikguscode/calculator/calculator/model/DateTypeChecker.java[m
-[36m@@ -4,10 +4,7 @@[m [mimport static com.nikguscode.calculator.calculator.model.RequestStatus.*;[m
+[36m@@ -4,10 +4,7 @@[m [mimport static com.nikguscode.calculator.calculator.model.DateType.*;[m
  [m
  import java.time.DayOfWeek;[m
  import java.time.LocalDate;[m
