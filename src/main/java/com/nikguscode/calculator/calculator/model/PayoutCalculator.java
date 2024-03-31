@@ -26,7 +26,7 @@ public class PayoutCalculator {
         LocalDate localDate = LocalDate.of(year, month, date);
 
         for (int currentDay = 0; currentDay < holidayDuration; currentDay++) {
-            if (DateTypeChecker.isWorkingDay(localDate).equals(WORKING_DAY)) {
+            if (DateTypeChecker.isWorkingDay(localDate).equals(PAYOUT_DAY)) {
                 workingDays++;
             }
 
