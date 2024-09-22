@@ -34,7 +34,6 @@ import static com.nikguscode.calculator.calculator.controller.Constants.*;
  *     <li>{@link CalculatorController#isValidDurationOnly(Integer, LocalDate, LocalDate) isValidDurationOnly()}</li>
  * </ul>
  */
-
 @RestController
 @Log4j2
 public class CalculatorController {
