@@ -3,23 +3,23 @@
 [1m--- a/src/main/java/com/nikguscode/calculator/calculator/controller/CalculateController.java[m
 [1m+++ b/src/main/java/com/nikguscode/calculator/calculator/controller/CalculateController.java[m
 [36m@@ -14,12 +14,12 @@[m [mpublic class CalculateController {[m
-         this.payoutCalculator = payoutCalculator;[m
+         this.localPayoutCalculator = localPayoutCalculator;[m
      }[m
  [m
 [31m-//    @GetMapping("/calculate")[m
 [31m-//    private String getData(@RequestParam double salary, @RequestParam(name = "duration") int holidayDuration) {[m
-[31m-//        return payoutCalculator.calculate(salary, holidayDuration);[m
+[31m-//        return localPayoutCalculator.calculate(salary, holidayDuration);[m
 [31m-//    }[m
 [31m-[m
      @GetMapping("/calculate")[m
 [32m+[m[32m    private String getData(@RequestParam double salary, @RequestParam(name = "duration") int holidayDuration) {[m
-[32m+[m[32m        return payoutCalculator.calculate(salary, holidayDuration);[m
+[32m+[m[32m        return localPayoutCalculator.calculate(salary, holidayDuration);[m
 [32m+[m[32m    }[m
 [32m+[m
 [32m+[m[32m    @GetMapping("/calculate-by-date")[m
      private String getData(@RequestParam double salary, @RequestParam(name = "duration") int holidayDuration,[m
                             @RequestParam int date, @RequestParam int month, @RequestParam int year) {[m
-         return payoutCalculator.calculate(salary, holidayDuration, date, month, year);[m
+         return localPayoutCalculator.calculate(salary, holidayDuration, date, month, year);[m
 [1mdiff --git a/src/main/java/com/nikguscode/calculator/calculator/model/DateStorage.java b/src/main/java/com/nikguscode/calculator/calculator/model/DateStorage.java[m
 [1mindex 5199043..ae3f7bc 100644[m
 [1m--- a/src/main/java/com/nikguscode/calculator/calculator/model/DateStorage.java[m
@@ -27,7 +27,7 @@
 [36m@@ -1,5 +1,7 @@[m
  package com.nikguscode.calculator.calculator.model;[m
  [m
-[32m+[m[32mimport static com.nikguscode.calculator.calculator.model.DateType.*;[m
+[32m+[m[32mimport static com.nikguscode.calculator.calculator.model.enumiration.DateType.*;[m
 [32m+[m
  import java.time.LocalDate;[m
  import java.util.HashMap;[m
@@ -76,7 +76,7 @@
 [1mindex 343c729..9b9ae7e 100644[m
 [1m--- a/src/main/java/com/nikguscode/calculator/calculator/model/DateTypeChecker.java[m
 [1m+++ b/src/main/java/com/nikguscode/calculator/calculator/model/DateTypeChecker.java[m
-[36m@@ -4,10 +4,7 @@[m [mimport static com.nikguscode.calculator.calculator.model.DateType.*;[m
+[36m@@ -4,10 +4,7 @@[m [mimport static com.nikguscode.calculator.calculator.model.enumiration.DateType.*;[m
  [m
  import java.time.DayOfWeek;[m
  import java.time.LocalDate;[m
