@@ -9,7 +9,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -43,11 +46,11 @@ public class CalculatorController {
 
     @GetMapping("/calculator")
     public ResponseEntity<Long> handle(@RequestParam double salary,
-                                    @RequestParam(required = false) Integer vacationDuration,
-                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = DATE_PATTERN)
-                                    LocalDate startVacationDate,
-                                    @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = DATE_PATTERN)
-                                    LocalDate endVacationDate) throws InvalidValueException, DateTimeException {
+                                       @RequestParam(required = false) Integer vacationDuration,
+                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = DATE_PATTERN)
+                                           LocalDate startVacationDate,
+                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = DATE_PATTERN)
+                                           LocalDate endVacationDate) throws InvalidValueException, DateTimeException {
         if (isValidDurationAndDate(vacationDuration, startVacationDate, endVacationDate)) {
             vacationDuration = Period.between(startVacationDate, endVacationDate).getDays();
             return ResponseEntity.ok(payoutCalculator.calculate(salary, vacationDuration + 1, startVacationDate));
