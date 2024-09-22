@@ -6,7 +6,7 @@
 
 ---
 
-1️⃣ <a name="first-endpoint">`GET/calculator?salary=50000&vacationDuration=5`
+1️⃣ <a name="first-endpoint">`GET/localhost:8080/calculator?salary=50000&vacationDuration=5`
 
 **Параметры запроса:**
 - `salary (double)` - ежемесечная зарплата
@@ -18,7 +18,7 @@
 
 <a href="#api">⬆️</a>
 
-<a name="second-endpoint">`GET/calculator?salary=50000&vacationDuration=5&startVacationDate=05-08-2024`
+<a name="second-endpoint">`GET/localhost:8080/calculator?salary=50000&vacationDuration=5&startVacationDate=05-08-2024`
 
 **Параметры запроса:**
 - `salary (double)` - ежемесечная зарплата
@@ -31,7 +31,7 @@
 
 <a href="#api">⬆️</a>
 
-<a name="third-endpoint">`GET/calculator?salary=50000&startVacationDate=05-08-2024&endVacationDate=08-08-2024`
+<a name="third-endpoint">`GET/localhost:8080/calculator?salary=50000&startVacationDate=05-08-2024&endVacationDate=08-08-2024`
 
 **Параметры запроса:**
 - `salary (double)` - ежемесечная зарплата
