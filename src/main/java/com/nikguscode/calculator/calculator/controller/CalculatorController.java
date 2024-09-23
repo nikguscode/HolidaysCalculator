@@ -3,7 +3,6 @@ package com.nikguscode.calculator.calculator.controller;
 import com.nikguscode.calculator.calculator.dto.ErrorDto;
 import com.nikguscode.calculator.calculator.exception.InvalidValueException;
 import com.nikguscode.calculator.calculator.model.calculator.PayoutCalculator;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,20 +21,9 @@ import static com.nikguscode.calculator.calculator.controller.Constants.*;
 
 /**
  * <p>Контроллер, реализующий единственный эндпоинт программы и метод {@link CalculatorController#handle(double, Integer, LocalDate, LocalDate) handle()}
- * для обработки запросов к этому эндпоинту.</p>
- *
- * <p>Метод {@link CalculatorController#handleInvalidValueAndDateTimeException(Exception)} отвечает за возврат
- * корректного ответа, понятного пользователю API.</p>
- *
- * <p>Контроллер включает методы для обработки различных сценариев работы эндпоинта в зависимости от параметров запроса:</p>
- * <ul>
- *     <li>{@link CalculatorController#isValidDurationAndDate(Integer, LocalDate, LocalDate) isValidDurationAndDate()}</li>
- *     <li>{@link CalculatorController#isValidDurationAndStartDate(Integer, LocalDate, LocalDate) isValidDurationAndStartDate()}</li>
- *     <li>{@link CalculatorController#isValidDurationOnly(Integer, LocalDate, LocalDate) isValidDurationOnly()}</li>
- * </ul>
+ * для обработки запросов к этому эндпоинту</p>
  */
 @RestController
-@Log4j2
 public class CalculatorController {
     private final PayoutCalculator payoutCalculator;
 
@@ -43,6 +31,26 @@ public class CalculatorController {
         this.payoutCalculator = payoutCalculator;
     }
 
+    /**
+     * <p>
+     * Данный метод является обработчиком эндпоинта. Он обрабатывает только успешные запросы, все
+     * исключения обрабатываются в {@link CalculatorController#handleInvalidValueAndDateTimeException(Exception)
+     * handleInvalidValueAndDateTimeException()}. Для выбора стратегии рассчёта отпускных используются следующие методы: <br/>
+     * <ul>
+     *     <li>{@link CalculatorController#isValidDate(Integer, LocalDate, LocalDate) isValidDurationAndDate()}</li>
+     *     <li>{@link CalculatorController#isValidDurationAndStartDate(Integer, LocalDate, LocalDate)  isValidDurationAndStartDate()}</li>
+     *     <li>{@link CalculatorController#isValidDurationOnly(Integer, LocalDate, LocalDate)   isValidDurationOnly()}</li>
+     * </ul>
+     * </p>
+     *
+     * @param salary ежемесечная зарплата пользователя
+     * @param vacationDuration продолжительность отпуска
+     * @param startVacationDate дата начала отпуска
+     * @param endVacationDate дата окончания отпуска
+     * @return отпускные пользователя в виде целого числа
+     * @throws InvalidValueException обработка некорректных значений для зарплаты и продолжительности отпуска
+     * @throws DateTimeException обработка некорректных дат, пример: 30-02-2024
+     */
     @GetMapping("/calculator")
     public ResponseEntity<Long> handle(@RequestParam double salary,
                                        @RequestParam(required = false) Integer vacationDuration,
@@ -50,7 +58,7 @@ public class CalculatorController {
                                            LocalDate startVacationDate,
                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = DATE_PATTERN)
                                            LocalDate endVacationDate) throws InvalidValueException, DateTimeException {
-        if (isValidDurationAndDate(vacationDuration, startVacationDate, endVacationDate)) {
+        if (isValidDate(vacationDuration, startVacationDate, endVacationDate)) {
             vacationDuration = Period.between(startVacationDate, endVacationDate).getDays();
             return ResponseEntity.ok(payoutCalculator.calculate(salary, vacationDuration + 1, startVacationDate));
         } else if (isValidDurationAndStartDate(vacationDuration, startVacationDate, endVacationDate)) {
@@ -62,6 +70,19 @@ public class CalculatorController {
         }
     }
 
+    /**
+     * <p>
+     * Данный метод предназначен для перехвата исключений. Перехватывает следующие исключения:
+     * <ul>
+     *     <li>{@link InvalidValueException}</li>
+     *     <li>{@link DateTimeException}</li>
+     *     <li>{@link MissingServletRequestParameterException}</li>
+     * </ul>
+     * </p>
+     *
+     * @param ex выбрасываемое исключение
+     * @return {@link ErrorDto}, который содержит код ответа и сообщение с информацией для клиента
+     */
     @ExceptionHandler({ InvalidValueException.class, DateTimeException.class, MissingServletRequestParameterException.class })
     public ResponseEntity<ErrorDto> handleInvalidValueAndDateTimeException(Exception ex) {
         String errorMessage;
@@ -78,14 +99,41 @@ public class CalculatorController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDto);
     }
 
-    private boolean isValidDurationAndDate(Integer vacationDuration, LocalDate startVacationDate, LocalDate endVacationDate) {
+    /**
+     * Данный метод предназначен для стратегии, при которой пользователь выполняет рассчёт отпускных, используя даты, а
+     * не продолжительность отпуска. Данная стратегия учитывает неоплачиваемые (праздничные) дни
+     *
+     * @param vacationDuration продолжительность отпуска
+     * @param startVacationDate дата начала отпуска
+     * @param endVacationDate дата окончания отпуска
+     * @return true, если пользователь указал дату начала отпуска и дату окончания отпуска, иначе false
+     */
+    private boolean isValidDate(Integer vacationDuration, LocalDate startVacationDate, LocalDate endVacationDate) {
         return vacationDuration == null && startVacationDate != null && endVacationDate != null;
     }
 
+    /**
+     * Данный метод предназначен для стратегии, при которой пользователь выполняет рассчёт отпускных, используя дату
+     * начала отпуска, а также его продолжительность. Данная стратегия учитывает неоплачиваемые (праздничные) дни
+     *
+     * @param vacationDuration продолжительность отпуска
+     * @param startVacationDate дата начала отпуска
+     * @param endVacationDate дата окончания отпуска
+     * @return true, если пользователь указал дату начала отпуска и его длительность, иначе false
+     */
     private boolean isValidDurationAndStartDate(Integer vacationDuration, LocalDate startVacationDate, LocalDate endVacationDate) {
         return vacationDuration != null && startVacationDate != null && endVacationDate == null;
     }
 
+    /**
+     * Данный метод предназначен для стратегии, при которой пользователь выполняет рассчёт отпускных, используя только
+     * продолжительность отпуска
+     *
+     * @param vacationDuration продолжительность отпуска
+     * @param startVacationDate дата начала отпуска
+     * @param endVacationDate дата окончания отпуска
+     * @return true, если пользователь указал длительность отпуска, иначе false
+     */
     private boolean isValidDurationOnly(Integer vacationDuration, LocalDate startVacationDate, LocalDate endVacationDate) {
         return vacationDuration != null && startVacationDate == null && endVacationDate == null;
     }

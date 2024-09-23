@@ -1,17 +1,20 @@
 package com.nikguscode.calculator.calculator.model;
 
 
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.stereotype.Service;
-
+/**
+ * Хранилище дат праздников, содержит единственный метод {@link HolidaysDateStorage#isPayableDay(LocalDate) isPayableDay()}
+ * для обращения к {@link HolidaysDateStorage#holidaysSet holidaySet}
+ */
 @Service
 public final class HolidaysDateStorage {
-    private HolidaysDateStorage() {}
-
     private static final Set<String> holidaysSet = new HashSet<>();
+    private HolidaysDateStorage() {}
 
     static {
         holidaysSet.add("9/5");
@@ -30,6 +33,12 @@ public final class HolidaysDateStorage {
         holidaysSet.add("8/3");
     }
 
+    /**
+     * Метод, проверяющий, есть ли дата в {@link HolidaysDateStorage#holidaysSet holidaysSet}
+     *
+     * @param date дата, которую необходимо проверить
+     * @return true если дата не содержится в {@link HolidaysDateStorage#holidaysSet holidaysSet}, иначе false
+     */
     public static boolean isPayableDay(LocalDate date) {
         String holidayKey = date.getDayOfMonth() + "/" + date.getMonthValue();
         return !holidaysSet.contains(holidayKey);
